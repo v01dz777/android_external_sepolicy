@@ -48,6 +48,7 @@ type gps_data_file, file_type, data_file_type;
 # /data/misc subdirectories
 type bluetoothd_data_file, file_type, data_file_type;
 type bluetooth_data_file, file_type, data_file_type;
+type audio_data_file, file_type, data_file_type;
 type keystore_data_file, file_type, data_file_type;
 type vpn_data_file, file_type, data_file_type;
 type systemkeys_data_file, file_type, data_file_type;
@@ -58,6 +59,8 @@ type camera_calibration_file, file_type, data_file_type;
 # /data/data subdirectories - app sandboxes
 type app_data_file, file_type, data_file_type;
 type platform_app_data_file, file_type, data_file_type, mlstrustedobject;
+# Add type name compatibility
+typealias audio_data_file alias audio_firmware_file;
 # Default type for anything under /cache
 type cache_file, file_type, mlstrustedobject;
 # Type for /cache/.*\.{data|restore} and default
