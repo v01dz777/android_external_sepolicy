@@ -11,9 +11,9 @@ allow zygote self:capability setpcap;
 # Switch SELinux context to app domains.
 allow zygote system:process dyntransition;
 allow zygote appdomain:process dyntransition;
-# Allow zygote to read + write app data dirs (b/10455872 and b/10498304)
+# Allow zygote to read app data dirs (b/10455872)
 allow zygote appdomain:dir { getattr search };
-allow zygote appdomain:file { r_file_perms write };
+allow zygote appdomain:file { r_file_perms };
 # Move children into the peer process group.
 allow zygote system:process { getpgid setpgid };
 allow zygote appdomain:process { getpgid setpgid };
@@ -51,3 +51,8 @@ allow zygote init:binder call;
 allow zygote shell_data_file:file { write getattr };
 allow zygote system:binder { transfer call };
 allow zygote servicemanager:binder { call };
+
+# zygote talks to init
+unix_socket_connect(zygote, property, init);
+allow zygote system_prop:property_service set;
+allow zygote init_shell:process sigchld;
