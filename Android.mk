@@ -24,7 +24,22 @@ endif
 
 # Builds paths for all policy files found in BOARD_SEPOLICY_DIRS.
 # $(1): the set of policy name paths to build
-build_policy = $(foreach type, $(1), $(wildcard $(addsuffix /$(type), $(LOCAL_PATH) $(BOARD_SEPOLICY_DIRS))))
+build_policy = $(call uniq,$(foreach type, $(1), \
+  $(filter-out $(BOARD_SEPOLICY_IGNORE), \
+    $(foreach expanded_type, $(notdir $(wildcard $(addsuffix /$(type), $(LOCAL_PATH)))), \
+      $(if $(filter $(expanded_type), $(BOARD_SEPOLICY_REPLACE)), \
+        $(wildcard $(addsuffix $(expanded_type), $(sort $(dir $(sepolicy_replace_paths))))), \
+        $(LOCAL_PATH)/$(expanded_type) \
+      ) \
+    ) \
+    $(foreach union_policy, $(wildcard $(addsuffix /$(type), $(BOARD_SEPOLICY_DIRS))), \
+      $(if $(filter $(notdir $(union_policy)), $(BOARD_SEPOLICY_UNION)), \
+        $(union_policy), \
+      ) \
+    ) \
+  ) \
+))
+build_policy = $(call uniq, $(foreach type, $(1), $(wildcard $(addsuffix /$(type), $(LOCAL_PATH) $(BOARD_SEPOLICY_DIRS)))))
 
 sepolicy_build_files := security_classes \
                         initial_sids \
